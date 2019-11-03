@@ -23,6 +23,12 @@ readonly codenames=('ahome')
 readonly components=('contrib')
 readonly architcures=('i386' 'amd64' 'all')
 
+#### Generate key file =========================================================
+
+gpg --armor --export "${openkey}" > openkey.gpg
+
+test -s openkey.gpg
+
 #### Generate Packages file ====================================================
 
 for codename in "${codenames[@]}"

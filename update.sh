@@ -18,7 +18,7 @@ join_by()
 #### Constants =================================================================
 
 readonly distrib='AHome'
-readonly openkey='D2321B555BBFB07FCE47411B41EC5F2569897FD5'
+readonly openkey='8AE7E3FF56C1A0E32104A1F80B3E9FE030CC35BF'
 readonly codenames=('ahome')
 readonly components=('contrib')
 readonly architcures=('i386' 'amd64' 'all')

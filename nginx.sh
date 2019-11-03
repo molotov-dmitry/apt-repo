@@ -20,7 +20,7 @@ fi
 
 sudo mkdir -p /etc/nginx/sites-available
 
-cat | sudo tee /etc/nginx/sites-available/repo.conf << _EOF
+cat << _EOF | sudo tee "/etc/nginx/sites-available/${REPO_NAME}.conf"
 server
 {
     listen ${HTTP_PORT};
@@ -35,6 +35,12 @@ server
 }
 _EOF
 
-sudo ln -s /etc/nginx/sites-available/repo.conf /etc/nginx/sites-enabled/
+if [[ -e "/etc/nginx/sites-enabled/${REPO_NAME}.conf" ]]
+then
+    sudo unlink "/etc/nginx/sites-enabled/${REPO_NAME}.conf"
+fi
+
+sudo ln -s "/etc/nginx/sites-available/${REPO_NAME}.conf" "/etc/nginx/sites-enabled/${REPO_NAME}.conf"
 
 sudo service nginx restart
+

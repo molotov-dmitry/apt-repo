@@ -9,9 +9,11 @@ for file in incoming/*.deb
 do
     test -f "$file"
     
-    packageinfo="$(LC_ALL=C dpkg -I "$file" | grep '^ Package: \|^ Source: ')"
+    packageinfo="$(LC_ALL=C dpkg -I "$file" | grep '^ Package: \|^ Source: \|^ Version: \|^ Architecture: ')"
     packagename="$(echo "${packageinfo}" | grep '^ Package: ' | cut -d ' ' -f 3)"
     packagesource="$(echo "${packageinfo}" | grep '^ Source: ' | cut -d ' ' -f 3)"
+    packageversion="$(echo "${packageinfo}" | grep '^ Version: ' | cut -d ' ' -f 3)"
+    packagearch="$(echo "${packageinfo}" | grep '^ Architecture: ' | cut -d ' ' -f 3)"
     
     test -n "${packagename}"
     
@@ -29,5 +31,14 @@ do
     
     mkdir -p "pool/${letter}/${packagesource}"
     
-    mv "${file}" "pool/${letter}/${packagesource}/"
+    dstname="pool/${letter}/${packagesource}/${packagename}_${packageversion}_${packagearch}.deb"
+    
+    cp -f "${file}" "${dstname}"
+    
+    oldfiles="$(ls "pool/${letter}/${packagesource}/${packagename}_"*"_${packagearch}.deb" | grep -v "${dstname}")"
+    
+    if [[ -n $oldfiles ]]
+    then
+        rm -fi $oldfiles
+    fi 
 done

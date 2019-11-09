@@ -33,7 +33,7 @@ do
     
     dstname="pool/${letter}/${packagesource}/${packagename}_${packageversion}_${packagearch}.deb"
     
-    cp -f "${file}" "${dstname}"
+    mv "${file}" "${dstname}"
     
     oldfiles="$(ls "pool/${letter}/${packagesource}/${packagename}_"*"_${packagearch}.deb" | grep -v "${dstname}")"
     

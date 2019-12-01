@@ -5,6 +5,8 @@ set -e
 ROOT_PATH="$(cd "$(dirname "$0")" && pwd)"
 cd "${ROOT_PATH}"
 
+needupdate=0
+
 for file in incoming/*.deb
 do
     test -f "$file"
@@ -35,10 +37,17 @@ do
     
     mv "${file}" "${dstname}"
     
-    oldfiles="$(ls "pool/${letter}/${packagesource}/${packagename}_"*"_${packagearch}.deb" | grep -v "${dstname}")"
+    oldfiles="$(ls "pool/${letter}/${packagesource}/${packagename}_"*"_${packagearch}.deb" | grep -v "${dstname}" || true)"
     
-    if [[ -n $oldfiles ]]
+    if [[ -n "$oldfiles" ]]
     then
         rm -fi $oldfiles
     fi 
+
+    needupdate=1
 done
+
+if [[ $needupdate -gt 0 ]]
+then
+    bash update.sh
+fi

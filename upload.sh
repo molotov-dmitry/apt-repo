@@ -93,13 +93,20 @@ do
     arch="${archs[$package]:=$DEFAULT_ARCH}"
     section="${sections[$package]:=$DEFAULT_SECTION}"
 
-    localversion="$(ls -1 pool/${letter}/${source}/ | grep "^${package}_[^_]*_${arch}.deb" | sort --version-sort | tail -n1 | cut -d '_' -f 2)"
     if [[ "${source:0:3}" == 'lib' ]]
     then
         letter=${source:0:4}
     else
         letter=${source:0:1}
     fi
+    
+    if [[ -d "pool/${letter}/${source}/" ]]
+    then
+        localversion="$(ls -1 pool/${letter}/${source}/ | grep "^${package}_[^_]*_${arch}.deb" | sort --version-sort | tail -n1 | cut -d '_' -f 2)"
+    else
+        localversion=""
+    fi
+    
     remoteversion="$(curl -s -l ftp://${mirror}/${distrib}/pool/${section}/${letter}/${source}/ | grep "^${package}_[^_]*_${arch}.deb" | sort --version-sort | tail -n1 | cut -d '_' -f 2)"
 
     if [[ -z "$remoteversion" || "$remoteversion" == "$localversion" ]]

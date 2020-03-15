@@ -94,8 +94,8 @@ do
     section="${sections[$package]:=$DEFAULT_SECTION}"
 
     letter=${source:0:1}
-    localversion="$(ls -1 pool/${letter}/${source}/ | grep "^${package}_[0-9.]*_${arch}.deb" | sort --version-sort | tail -n1 | cut -d '_' -f 2)"
-    remoteversion="$(curl -s -l ftp://${mirror}/${distrib}/pool/${section}/${letter}/${source}/ | grep "^${package}_[0-9.]*_${arch}.deb" | sort --version-sort | tail -n1 | cut -d '_' -f 2)"
+    localversion="$(ls -1 pool/${letter}/${source}/ | grep "^${package}_[^_]*_${arch}.deb" | sort --version-sort | tail -n1 | cut -d '_' -f 2)"
+    remoteversion="$(curl -s -l ftp://${mirror}/${distrib}/pool/${section}/${letter}/${source}/ | grep "^${package}_[^_]*_${arch}.deb" | sort --version-sort | tail -n1 | cut -d '_' -f 2)"
 
     if [[ -z "$remoteversion" || "$remoteversion" == "$localversion" ]]
     then

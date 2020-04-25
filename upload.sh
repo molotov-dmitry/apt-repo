@@ -118,7 +118,7 @@ do
     then
         echo "Updating $package from $localversion to $remoteversion" >&2
         
-        mkdir -p "pool/${letter}/${source}/${name}"
+        mkdir -p "pool/${letter}/${source}"
 
         name="${package}_${remoteversion}_${arch}.deb"
         wget -qq "https://${mirror}/${distrib}/pool/${section}/${letter}/${source}/${name}" -O "pool/${letter}/${source}/${name}"

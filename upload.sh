@@ -71,12 +71,14 @@ DEFAULT_SECTION='main'
 
 ### Packages ===================================================================
 
-packages=( 'mint-themes' 'mint-x-icons' 'mint-y-icons' 'rabbitvcs-core' 'rabbitvcs-nautilus' )
+packages=( 'mint-themes' 'mint-x-icons' 'mint-y-icons' 'rabbitvcs-core' 'rabbitvcs-nautilus' 'bpytop' )
 
 count=${#packages[@]}
 
 distribs['rabbitvcs-core']='debian'
 distribs['rabbitvcs-nautilus']='debian'
+
+distribs['bpytop']='debian'
 
 sources['rabbitvcs-core']='rabbitvcs'
 sources['rabbitvcs-nautilus']='rabbitvcs'

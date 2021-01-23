@@ -1,3 +1,4 @@
-pool
-incoming
-dists
+/pool/
+/incoming/
+/dists/
+/*.gpg

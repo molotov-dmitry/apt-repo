@@ -71,23 +71,11 @@ DEFAULT_SECTION='main'
 
 ### Packages ===================================================================
 
-packages=( 'mint-themes' 'mint-x-icons' 'mint-y-icons' 'rabbitvcs-core' 'rabbitvcs-nautilus' 'bpytop' 'libappindicator1' )
+packages=( 'mint-themes' 'mint-x-icons' 'mint-y-icons' 'bpytop' )
 
 count=${#packages[@]}
 
-distribs['rabbitvcs-core']='debian'
-distribs['rabbitvcs-nautilus']='debian'
-
 distribs['bpytop']='debian'
-
-distribs['libappindicator1']='debian'
-
-sources['rabbitvcs-core']='rabbitvcs'
-sources['rabbitvcs-nautilus']='rabbitvcs'
-
-sources['libappindicator1']='libappindicator'
-
-archs['libappindicator1']='amd64'
 
 ### Download external packages =================================================
 

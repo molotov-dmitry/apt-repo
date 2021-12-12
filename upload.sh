@@ -71,11 +71,9 @@ DEFAULT_SECTION='main'
 
 ### Packages ===================================================================
 
-packages=( 'mint-themes' 'mint-x-icons' 'mint-y-icons' 'bpytop' )
+packages=( 'mint-themes' 'mint-x-icons' 'mint-y-icons' )
 
 count=${#packages[@]}
-
-distribs['bpytop']='debian'
 
 ### Download external packages =================================================
 

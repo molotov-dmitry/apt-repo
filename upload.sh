@@ -71,22 +71,46 @@ DEFAULT_SECTION='main'
 
 ### Packages ===================================================================
 
-packages=( 'mint-themes' 'mint-x-icons' 'mint-y-icons' )
-
-count=${#packages[@]}
+while read -r line;
+do
+    if [[ -z "$line" ]]
+    then
+        continue
+    fi
+    
+    mirror="$(echo "$line"  | cut -d ';' -f 1 -s)"
+    distrib="$(echo "$line" | cut -d ';' -f 2 -s)"
+    section="$(echo "$line" | cut -d ';' -f 3 -s)"
+    arch="$(echo "$line"    | cut -d ';' -f 4 -s)"
+    source="$(echo "$line"  | cut -d ';' -f 5 -s | cut -d '/' -f 1 -s)"
+    package="$(echo "$line" | cut -d ';' -f 5 -s | cut -d '/' -f 2)"
+    
+    if [[ -z "$package" ]]
+    then
+        continue
+    fi
+    
+    packages+=( "$package" )
+    mirrors["$package"]="$mirror"
+    sources["$package"]="$source"
+    distribs["$package"]="$distrib"
+    archs["$package"]="$arch"
+    sections["$package"]="$section"
+    
+done < packages.list
 
 ### Download external packages =================================================
+
+count=${#packages[@]}
 
 for (( i = 0; i < count; i++ ))
 do
     package="${packages[$i]}"
 
-    echo "cheking ${package}"
-
     mirror="${mirrors[$package]:=$DEFAULT_MIRROR}"
     source="${sources[$package]:=$package}"
     distrib="${distribs[$package]:=$DEFAULT_DISTRIB}"
-    arch="${archs[$package]:=$DEFAULT_ARCH}"
+    archlist="${archs[$package]:=$DEFAULT_ARCH}"
     section="${sections[$package]:=$DEFAULT_SECTION}"
 
     if [[ "${source:0:3}" == 'lib' ]]
@@ -96,36 +120,41 @@ do
         letter=${source:0:1}
     fi
     
-    if [[ -d "pool/${letter}/${source}/" ]]
-    then
-        localversion="$(ls -1 pool/${letter}/${source}/ | grep "^${package}_[^_]*_${arch}.deb" | sort --version-sort | tail -n1 | cut -d '_' -f 2)"
-    else
-        localversion=""
-    fi
+    for arch in $archlist
+    do
+        echo "Cheking ${package} ${arch}"
     
-    remoteversion="$(curl -s -l ftp://${mirror}/${distrib}/pool/${section}/${letter}/${source}/ | grep "^${package}_[^_]*_${arch}.deb" | sort --version-sort | tail -n1 | cut -d '_' -f 2)"
-
-    if [[ -z "$remoteversion" || "$remoteversion" == "$localversion" ]]
-    then
-        continue
-    fi
-
-    if [[ "$(echo -e "$localversion\n$remoteversion" | sort --version-sort | tail -n1)" == "$remoteversion" ]]
-    then
-        echo "Updating $package from $localversion to $remoteversion" >&2
-        
-        mkdir -p "pool/${letter}/${source}"
-
-        name="${package}_${remoteversion}_${arch}.deb"
-        wget -qq "https://${mirror}/${distrib}/pool/${section}/${letter}/${source}/${name}" -O "pool/${letter}/${source}/${name}"
-
-        if [[ -n "$localversion" ]]
+        if [[ -d "pool/${letter}/${source}/" ]]
         then
-            rm -fi "pool/${letter}/${source}/${package}_${localversion}_${arch}.deb"
+            localversion="$(ls -1 pool/${letter}/${source}/ | grep "^${package}_[^_]*_${arch}.deb" | sort --version-sort | tail -n1 | cut -d '_' -f 2)"
+        else
+            localversion=""
+        fi
+        
+        remoteversion="$(curl -s -l ftp://${mirror}/${distrib}/pool/${section}/${letter}/${source}/ | grep "^${package}_[^_]*_${arch}.deb" | sort --version-sort | tail -n1 | cut -d '_' -f 2)"
+
+        if [[ -z "$remoteversion" || "$remoteversion" == "$localversion" ]]
+        then
+            continue
         fi
 
-        needupdate=1
-    fi
+        if [[ "$(echo -e "$localversion\n$remoteversion" | sort --version-sort | tail -n1)" == "$remoteversion" ]]
+        then
+            echo "Updating $package from $localversion to $remoteversion" >&2
+            
+            mkdir -p "pool/${letter}/${source}"
+
+            name="${package}_${remoteversion}_${arch}.deb"
+            wget -qq "https://${mirror}/${distrib}/pool/${section}/${letter}/${source}/${name}" -O package.tmp && mv -f package.tmp "pool/${letter}/${source}/${name}"
+
+            if [[ -n "$localversion" ]]
+            then
+                rm -fi "pool/${letter}/${source}/${package}_${localversion}_${arch}.deb"
+            fi
+
+            needupdate=1
+        fi
+    done
 done
 
 ### Update package list ========================================================

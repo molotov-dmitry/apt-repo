@@ -131,9 +131,24 @@ do
             localversion=""
         fi
         
-        remoteversion="$(curl -s -l ftp://${mirror}/${distrib}/pool/${section}/${letter}/${source}/ | grep "^${package}_[^_]*_${arch}.deb" | sort --version-sort | tail -n1 | cut -d '_' -f 2)"
+        for retry in {1..5}
+        do
+            remoteversion="$(curl -s https://${mirror}/${distrib}/pool/${section}/${letter}/${source}/ | grep -vF '>../<' | grep -F '<a href=' | cut -d '>' -f 2 | cut -d '<' -f 1 | grep "^${package}_[^_]*_${arch}.deb" | sort --version-sort | tail -n1 | cut -d '_' -f 2)"
+            
+            if [[ -n "$remoteversion" ]]
+            then
+                break
+            fi
+            
+            sleep 1
+        done
+        
+        if [[ -z "$remoteversion" ]]
+        then
+            echo "Packge not found"
+        fi
 
-        if [[ -z "$remoteversion" || "$remoteversion" == "$localversion" ]]
+        if [[ "$remoteversion" == "$localversion" ]]
         then
             continue
         fi

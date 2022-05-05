@@ -217,7 +217,14 @@ do
             mkdir -p "pool/${letter}/${source}"
 
             name="${package}_${remoteversion}_${arch}.deb"
-            wget -qq "https://${mirror}/${distrib}/pool/${section}/${letter}/${source}/${name}" -O package.tmp && mv -f package.tmp "pool/${letter}/${source}/${name}"
+            wget -qq "https://${mirror}/${distrib}/pool/${section}/${letter}/${source}/${name}" -O package.tmp 2>/dev/null && mv -f package.tmp "pool/${letter}/${source}/${name}"
+            
+            if [[ $? -ne 0 ]]
+            then
+                message "failed" "${CL_RED}"
+                rm -rf package.tmp
+                continue
+            fi
 
             message "updated" "${CL_BLUE}"
 

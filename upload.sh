@@ -48,9 +48,9 @@ function message()
 function urldecode()
 {
     if [[ -p /dev/stdin ]]; then
-        local url_encoded="$(cat - | tr '+' ' ')"
+        local url_encoded="$(cat -)"
     else
-        local url_encoded="${@//+/ }"
+        local url_encoded="$@"
     fi
 
     printf '%b' "${url_encoded//%/\\x}"

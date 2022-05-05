@@ -176,7 +176,7 @@ do
 
     for arch in $archlist
     do
-        title "Cheking ${package} ${arch}"
+        title "Checking ${package} ${arch}"
 
         if [[ -d "pool/${letter}/${source}/" ]]
         then

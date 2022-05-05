@@ -227,6 +227,8 @@ do
             fi
 
             needupdate=1
+        else
+            message "newer" "${CL_BLUE}"
         fi
     done
 done

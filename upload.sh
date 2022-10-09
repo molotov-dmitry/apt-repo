@@ -125,6 +125,9 @@ DEFAULT_SECTION='main'
 
 ### Packages ===================================================================
 
+if test -s packages.list
+then
+
 while read -r line;
 do
     if [[ -z "$line" || "$line" == '#'* ]]
@@ -152,6 +155,8 @@ do
     sections["$package"]="$section"
 
 done < packages.list
+
+fi
 
 ### Download external packages =================================================
 
